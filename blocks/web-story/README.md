@@ -1,4 +1,4 @@
-# Web Story 
+# Web Story Slider
 
 An interactive, full-screen-style story viewer for AEM Edge Delivery Services. Stories play through a sequence of slides with autoplay, progress bars, and playback controls
 
