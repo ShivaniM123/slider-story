@@ -1,77 +1,95 @@
 # Web Story 
 
-An interactive, full-screen-style story viewer for AEM Edge Delivery Services. Each story is a vertical 9:16 carousel of slides with autoplay, progress bars.
+An interactive, full-screen-style story viewer for AEM Edge Delivery Services. Stories play through a sequence of slides with autoplay, progress bars, and playback controls
+
+Url: https://story--slider-story--shivanim123.aem.page/story
 
 ## Features
 
-- **Autoplay** — advances every 6 seconds with animated progress bars
-- **Tap navigation** — tap right two-thirds to go forward, left third to go back; press-and-hold to pause
-- **Keyboard** — `ArrowLeft` / `ArrowRight` to navigate
-- **Pause / play** — top-right control stops and resumes autoplay
-- **Share** — uses the Web Share API, or copies the page URL to the clipboard
-- **Prev / next arrows** — sit outside the story card in the gutter; previous is disabled on slide 1
-- **Replay** — the next arrow becomes a replay button on the last slide
-- **Visibility pause** — autoplay pauses when the block scrolls out of view
+**1. Autoplay & progress**
 
-## File structure
+- Slides advance automatically every 6 seconds.
+- Segmented progress bars at the top show story position and fill as each slide plays.
+- Autoplay pauses when the block scrolls out of view and resumes when it returns.
+
+**2. Navigation**
+
+- Prev / next arrows sit outside the story card in the gutter.
+- Previous is disabled on the first slide; next becomes a replay control on the last slide.
+- Tap the left third of the story to go back, or the right two-thirds to advance.
+- Press-and-hold pauses until release.
+- Keyboard: `ArrowLeft` / `ArrowRight`.
+
+**3. Playback controls**
+
+- Pause / play button in the top-right stops and resumes autoplay.
+- Manual pause takes priority over press-and-hold and scroll-into-view resume.
+
+**4. Share**
+
+- Uses the Web Share API when available.
+- Falls back to copying the page URL to the clipboard with a “Link copied” tooltip.
+
+## File Overview
 
 ```
 blocks/web-story/
-├── web-story.js      # Block decoration and interaction logic
-├── web-story.css     # Layout, typography, and control styling
-└── README.md
+├── web-story.js      # Block logic — slides, autoplay, navigation, share, pause
+├── web-story.css     # Layout, caption styling, progress bars, control icons
+└── README.md         # This documentation
 
 icons/
 ├── nav-prev.svg      # Previous slide arrow
 ├── nav-next.svg      # Next slide arrow
-├── replay.svg        # Replay (last slide)
+├── replay.svg        # Replay control (last slide)
 ├── pause.svg         # Pause control
 ├── play.svg          # Play control (shown when paused)
-└── share.svg         # Share control (AMP story icon)
+└── share.svg         # Share control
 ```
 
-## Content model
+## Workflow
 
-The block expects one **row per slide**. Each row has two cells:
+| Step | What happens |
+| --- | --- |
+| **`web-story.js` (`decorate()`)** | Block entry point — EDS calls this to initialize the component |
+| **Parse rows** | Each authored row becomes one slide (image cell + caption cell) |
+| **Build UI** | Creates the viewer, progress bars, pause/play, share, and prev/next controls |
+| **Wire up events** | Attaches handlers for arrows, tap zones, keyboard, pause, and share |
+| **Start autoplay** | Shows slide 1 and begins the progress animation and slide timer |
+| **Web Story ready** | Story is interactive — users can navigate, pause, and share |
 
-1. **Image cell** — full-bleed background (`picture` or `img`)
-2. **Text cell** — caption overlay at the bottom
+**Capabilities:** autoplay · progress bars · tap zones · press-and-hold pause · pause/play · share · replay · keyboard nav · scroll-into-view pause · responsive layout
 
-## Customization
+## How to Use
 
-Override CSS custom properties on `.web-story`:
+1. Copy the `blocks/web-story` directory and the `icons/` assets (`nav-prev.svg`, `nav-next.svg`, `replay.svg`, `pause.svg`, `play.svg`, `share.svg`) into your EDS project.
 
-| Variable                      | Default              | Description                          |
-|-------------------------------|----------------------|--------------------------------------|
-| `--web-story-accent`          | `rgb(240 43 103)`    | Caption background / link color      |
-| `--web-story-aspect`          | `9 / 16`             | Story card aspect ratio              |
-| `--web-story-control-icon-size` | `48px`             | Pause, play, and share icon size     |
+2. **Authoring in Document Authoring (DA)**
 
-Example:
+   Each row in the block is one slide with two cells:
 
-```css
-.web-story {
-  --web-story-accent: rgb(200 30 80);
-  --web-story-control-icon-size: 40px;
-}
-```
+   | Cell | Content |
+   | --- | --- |
+   | **Cell 1** | Slide image (`picture` or `img`) |
+   | **Cell 2** | Caption text (`h1`–`h3`, `p`, optional `a`) |
 
-The viewer max-width is `360px` ( `380px` at `≥600px` viewport width).
 
-## Behavior notes
+3. Preview and publish the page.
 
-- **Autoplay duration** is set by `AUTOPLAY_MS` (6000) in `web-story.js`.
-- **Manual pause** takes priority over press-and-hold pause and scroll-into-view resume.
-- **Share fallback** — if `navigator.share` is unavailable, the URL is copied and a “Link copied” tooltip appears.
-- **No loop by default** — autoplay stops on the last slide; users replay via the next-arrow replay state or tap.
+## Points to Note
 
-## Fonts
+**Behavior**
 
-Caption styles reference **Oswald**, **Roboto**, and **Cookie**. Ensure these are loaded site-wide (for example via Google Fonts in `head.html` or `styles/fonts.css`) for the intended look.
+- Autoplay stops on the last slide; users replay via the next-arrow replay state or tap.
+- Share uses `navigator.share` when supported; otherwise the URL is copied to the clipboard.
 
-## Local development
+**Accessibility**
 
-From the project root:
+- Block is exposed as `role="region"` with `aria-roledescription="Web Story"`.
+- Controls have `aria-label` attributes (`Previous slide`, `Next slide`, `Pause story`, `Share story`, etc.).
+- Inactive slides are marked `aria-hidden="true"`.
+
+**Local development**
 
 ```sh
 npm i
@@ -79,9 +97,3 @@ aem up
 ```
 
 Add a page with a `web-story` block and open it at `http://localhost:3000/<your-page>`.
-
-## Accessibility
-
-- The block is exposed as `role="region"` with `aria-roledescription="Web Story"`.
-- Controls have `aria-label` attributes (`Previous slide`, `Next slide`, `Pause story`, `Share story`, etc.).
-- Inactive slides are marked `aria-hidden="true"`.
