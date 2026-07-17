@@ -1,0 +1,268 @@
+.web-story {
+  --web-story-accent: rgb(240 43 103);
+  --web-story-aspect: 9 / 16;
+  --web-story-control-icon-size: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #1c1c22;
+  padding: 24px 0;
+}
+
+.web-story .web-story-viewer {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: var(--web-story-aspect);
+  overflow: hidden;
+  border-radius: 6px;
+  background: #000;
+  box-shadow: 0 10px 40px rgb(0 0 0 / 40%);
+  touch-action: pan-y;
+}
+
+.web-story .web-story-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.web-story .web-story-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease;
+}
+
+.web-story .web-story-slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* full-bleed background image */
+.web-story .web-story-slide-image {
+  position: absolute;
+  inset: 0;
+}
+
+.web-story .web-story-slide-image picture,
+.web-story .web-story-slide-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* angled magenta caption box at the bottom */
+.web-story .web-story-slide-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 26px 20px 24px;
+  background: var(--web-story-accent);
+  clip-path: polygon(0 22px, 100% 0, 100% 100%, 0 100%);
+  color: #fff;
+}
+
+.web-story .web-story-slide-caption h1,
+.web-story .web-story-slide-caption h2,
+.web-story .web-story-slide-caption h3 {
+  margin: 0 0 8px;
+}
+
+.web-story .web-story-slide-caption h1 {
+  font-family: Oswald, sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.web-story .web-story-slide-caption h2 {
+  font-family: Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+}
+
+.web-story .web-story-slide-caption h3 {
+  font-family: Cookie, cursive;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.web-story .web-story-slide-caption p {
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.web-story .web-story-slide-caption a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 18px;
+  border-radius: 40px;
+  background: #fff;
+  color: var(--web-story-accent);
+  font-family: Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* progress bars across the top */
+.web-story .web-story-progress {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  left: 12px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+}
+
+.web-story .web-story-progress-bar {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 40%);
+  overflow: hidden;
+}
+
+.web-story .web-story-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.web-story .web-story-progress-fill.filling {
+  animation: web-story-fill linear forwards;
+}
+
+@keyframes web-story-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* play/pause + share buttons (top-right) */
+.web-story .web-story-playpause,
+.web-story .web-story-share {
+  position: absolute;
+  top: 16px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--web-story-control-icon-size);
+  height: var(--web-story-control-icon-size);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
+}
+
+.web-story .web-story-share {
+  right: 8px;
+  background: transparent url('../../icons/share.svg') center / contain no-repeat;
+}
+
+.web-story .web-story-playpause {
+  right: calc(var(--web-story-control-icon-size) + 12px);
+  background: transparent url('../../icons/pause.svg') center / contain no-repeat;
+}
+
+.web-story .web-story-playpause.is-paused {
+  background: transparent url('../../icons/play.svg') center / contain no-repeat;
+}
+
+.web-story .web-story-share svg {
+  display: none;
+}
+
+.web-story .web-story-share.copied::after {
+  content: 'Link copied';
+  position: absolute;
+  top: 40px;
+  right: 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 80%);
+  color: #fff;
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* navigation arrows — sit in the gutter outside the story card */
+.web-story .web-story-nav {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+  cursor: pointer;
+  padding: 0;
+}
+
+.web-story .web-story-nav::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.web-story .web-story-nav-prev::before {
+  background-image: url('../../icons/nav-prev.svg');
+}
+
+.web-story .web-story-nav-next::before {
+  background-image: url('../../icons/nav-next.svg');
+}
+
+/* first slide: previous arrow greyed out and inert */
+.web-story .web-story-nav:disabled {
+  background: rgb(255 255 255 / 35%);
+  cursor: default;
+  box-shadow: none;
+}
+
+.web-story .web-story-nav:disabled::before {
+  opacity: 0.45;
+}
+
+/* last slide: next arrow becomes a circular replay icon */
+.web-story .web-story-nav-replay::before {
+  background-image: url('../../icons/replay.svg');
+}
+
+@media (width >= 600px) {
+  .web-story {
+    gap: 28px;
+  }
+
+  .web-story .web-story-viewer {
+    max-width: 380px;
+  }
+}
